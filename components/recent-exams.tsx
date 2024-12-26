@@ -1,12 +1,8 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function RecentExams() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full">
       <div className="flex items-center">
         <Avatar className="h-9 w-9">
           <AvatarImage src="/avatars/01.png" alt="Avatar" />
@@ -14,9 +10,7 @@ export function RecentExams() {
         </Avatar>
         <div className="ml-4 space-y-1">
           <p className="text-sm font-medium leading-none">Olivia Martin</p>
-          <p className="text-sm text-muted-foreground">
-            Mathematics 101
-          </p>
+          <p className="text-sm text-muted-foreground">Mathematics 101</p>
         </div>
         <div className="ml-auto font-medium">95%</div>
       </div>
@@ -38,9 +32,7 @@ export function RecentExams() {
         </Avatar>
         <div className="ml-4 space-y-1">
           <p className="text-sm font-medium leading-none">Isabella Nguyen</p>
-          <p className="text-sm text-muted-foreground">
-            Chemistry 301
-          </p>
+          <p className="text-sm text-muted-foreground">Chemistry 301</p>
         </div>
         <div className="ml-auto font-medium">92%</div>
       </div>
@@ -62,13 +54,10 @@ export function RecentExams() {
         </Avatar>
         <div className="ml-4 space-y-1">
           <p className="text-sm font-medium leading-none">Sofia Davis</p>
-          <p className="text-sm text-muted-foreground">
-            Computer Science 401
-          </p>
+          <p className="text-sm text-muted-foreground">Computer Science 401</p>
         </div>
         <div className="ml-auto font-medium">98%</div>
       </div>
     </div>
-  )
+  );
 }
-

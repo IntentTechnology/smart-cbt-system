@@ -1,27 +1,32 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import { MainNav } from "@/components/main-nav"
-import { UserNav } from "@/components/user-nav"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Metadata } from "next";
+import Image from "next/image";
+import { MainNav } from "@/components/main-nav";
+import { UserNav } from "@/components/user-nav";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Profile",
   description: "User profile management page.",
-}
+};
 
 export default function ProfilePage() {
   return (
-    <div className="hidden flex-col md:flex">
-  
-      <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="flex-col flex">
+      <div className="flex-1 space-y-4 p-2 md:p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Profile</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-3">
+          <Card className="w-full lg:col-span-3">
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
             </CardHeader>
@@ -34,11 +39,15 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" placeholder="john@example.com" type="email" />
+                    <Input
+                      id="email"
+                      placeholder="john@example.com"
+                      type="email"
+                    />
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="picture">Profile Picture</Label>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex flex-col md:flex-row items-center md:space-x-4">
                       <Image
                         src="/placeholder.svg"
                         alt="Profile picture"
@@ -54,7 +63,7 @@ export default function ProfilePage() {
               </form>
             </CardContent>
           </Card>
-          <Card className="col-span-4">
+          <Card className="w-full lg:col-span-4">
             <CardHeader>
               <CardTitle>Exam History</CardTitle>
               <CardDescription>Your recent exam results</CardDescription>
@@ -63,8 +72,10 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 {[1, 2, 3].map((_, i) => (
                   <div key={i} className="flex items-center">
-                    <div className="ml-4 space-y-1">
-                      <p className="text-sm font-medium leading-none">Mathematics 101</p>
+                    <div className="lg:ml-4 space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        Mathematics 101
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         Score: 85%
                       </p>
@@ -78,6 +89,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
