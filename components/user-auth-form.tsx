@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Icons } from "@/components/icons"
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Icons } from "@/components/icons";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
 
     setTimeout(() => {
-      setIsLoading(false)
-      router.push("/dashboard")
-    }, 3000)
+      setIsLoading(false);
+      router.push("/dashboard");
+    }, 3000);
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div  className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={onSubmit}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
+        <div className="grid gap-5">
+          <div className="grid gap-3">
+            <Label className="" htmlFor="email">
+              Email Address
             </Label>
             <Input
               id="email"
@@ -42,8 +42,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               disabled={isLoading}
             />
           </div>
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="password">
+          <div className="grid gap-3">
+            <Label className="" htmlFor="password">
               Password
             </Label>
             <Input
@@ -60,7 +60,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Sign In
+            Log in
           </Button>
         </div>
       </form>
@@ -70,7 +70,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </div>
         {/* <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
+           Register
           </span>
         </div> */}
       </div>
@@ -83,6 +83,5 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         GitHub
       </Button> */}
     </div>
-  )
+  );
 }
-
