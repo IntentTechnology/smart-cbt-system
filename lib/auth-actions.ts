@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-const AuthbaseUrl = process.env.NEXT_PUBLIC_AUTH_BACKEND_URL;
+const AuthbaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const ProfilebaseUrl = process.env.NEXT_PUBLIC_PROFILE_BACKEND_URL;
 const GenbaseUrl = process.env.NEXT_PUBLIC_GENERAL_BACKEND_URL;
 export async function login(data: any) {
