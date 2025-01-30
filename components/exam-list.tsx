@@ -29,165 +29,100 @@ import { Input } from "@/components/ui/input";
 import { ExamCard } from "./exam-card";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-const data: Exam[] = [
-  {
-    id: "m5gr84i9",
-    subject: "Mathematics 101",
-    date: "2023-12-25",
-    status: "Scheduled",
-    duration: 120,
-  },
-  {
-    id: "3u1reuv4",
-    subject: "Physics 201",
-    date: "2023-12-26",
-    status: "Scheduled",
-    duration: 90,
-  },
-  {
-    id: "derv1ws0",
-    subject: "Chemistry 301",
-    date: "2023-12-27",
-    status: "Scheduled",
-    duration: 150,
-  },
-  {
-    id: "5kma53ae",
-    subject: "Biology 102",
-    date: "2023-12-28",
-    status: "Scheduled",
-    duration: 120,
-  },
-  {
-    id: "bhqecj4p",
-    subject: "Computer Science 401",
-    date: "2023-12-29",
-    status: "Scheduled",
-    duration: 180,
-  },
-];
+import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export type Exam = {
   id: string;
   subject: string;
-  date: string;
-  status: "Scheduled" | "Completed" | "Cancelled";
+  createdAt: string;
   duration: number;
 };
 
-export const columns: ColumnDef<Exam>[] = [
-  {
-    accessorKey: "subject",
-    header: "Subject",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("subject")}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
-  },
-  {
-    accessorKey: "date",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("date")}</div>,
-  },
-  {
-    accessorKey: "duration",
-    header: "Duration (minutes)",
-    cell: ({ row }) => <div>{row.getValue("duration")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const exam = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(exam.id)}
-            >
-              Copy exam ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <Link href={`/exams/${exam.id}`}>
-              {" "}
-              <DropdownMenuItem>View details</DropdownMenuItem>
-            </Link>
-            <Link href={`/exams/${exam.id}/take`}>
-              {" "}
-              <DropdownMenuItem>Take exam</DropdownMenuItem>
-            </Link>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
-
-export function ExamList() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+export function ExamList({ allExams }: any) {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isCapturing, setIsCapturing] = React.useState(false);
+  const [capturedImage, setCapturedImage] = React.useState<string | null>(null);
+  const [selectedExamId, setSelectedExamId] = React.useState<string | null>(
+    null
   );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const router = useRouter();
 
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  });
+  const startCapture = async () => {
+    setIsCapturing(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Error accessing the camera:", err);
+      toast({
+        title: "Camera Access Error",
+        description:
+          "Unable to access the camera. Please ensure you have given permission.",
+        variant: "destructive",
+      });
+      setIsCapturing(false);
+    }
+  };
+
+  const captureImage = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext("2d");
+      if (context) {
+        context.drawImage(videoRef.current, 0, 0, 640, 480);
+        const imageDataUrl = canvasRef.current.toDataURL("image/jpeg");
+        setCapturedImage(imageDataUrl);
+        localStorage.setItem("examCapturedImage", imageDataUrl);
+        setIsCapturing(false);
+
+        // Stop all video tracks
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    }
+  };
+
+  const handleTakeExam = (examId: string) => {
+    setSelectedExamId(examId);
+    setIsDialogOpen(true);
+    startCapture();
+  };
+
+  const handleStartExam = () => {
+    if (selectedExamId && capturedImage) {
+      router.push(`/exams/${selectedExamId}/take`);
+    } else {
+      toast({
+        title: "Error",
+        description: "Please capture an image before starting the exam.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-start md:items-center py-4 space-y-4 md:space-y-0">
-        <Input
+        {/* <Input
           placeholder="Filter subjects..."
           value={(table.getColumn("subject")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("subject")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
-        <DropdownMenu>
+        /> */}
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="md:ml-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
@@ -212,25 +147,27 @@ export function ExamList() {
                 );
               })}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
       <div className="rounded-md">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {table.getRowModel().rows?.length ? (
-            table
-              .getRowModel()
-              .rows.map((row) => <ExamCard key={row.id} row={row} />)
+          {allExams?.data.length ? (
+            allExams?.data.map((row: any) => (
+              <ExamCard key={row.id} row={row} onTakeExam={handleTakeExam} />
+            ))
           ) : (
-            <div className="col-span-3 text-center py-12">No results.</div>
+            <div className="col-span-3 text-center py-12">
+              No Available Exams! Please check Back Later.
+            </div>
           )}
         </div>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        {/* <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
+        </div> */}
+        {/* <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
@@ -247,8 +184,59 @@ export function ExamList() {
           >
             Next
           </Button>
-        </div>
+        </div> */}
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {capturedImage ? "Ready to Start" : "Capture Image"}
+            </DialogTitle>
+            <DialogDescription>
+              {capturedImage
+                ? "Your image has been captured. You can now start the exam."
+                : "Please look at the camera and click the capture button when ready."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center space-y-4">
+            {!capturedImage && (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{ width: "100%", maxWidth: "640px" }}
+              />
+            )}
+            {capturedImage && (
+              <Image
+                src={capturedImage || "/placeholder.svg"}
+                alt="Captured"
+                style={{ width: "100%", maxWidth: "640px" }}
+              />
+            )}
+            {!capturedImage ? (
+              <Button onClick={captureImage} disabled={!isCapturing}>
+                Capture
+              </Button>
+            ) : (
+              <Button
+                onClick={handleStartExam}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Start Exam
+              </Button>
+            )}
+          </div>
+          <canvas
+            ref={canvasRef}
+            style={{ display: "none" }}
+            width="640"
+            height="480"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

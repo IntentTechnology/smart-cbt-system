@@ -6,11 +6,11 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { UserAuthForm } from "@/components/user-auth-register-form";
+import { RegisterUserAuthForm } from "@/components/user-auth-register-form";
 import AuthWrapper from "@/components/auth-wrapper";
 
 export const metadata: Metadata = {
-  title: "",
+  title: "ExamEdge | Register  ",
   description: "Login to your account",
 };
 
@@ -18,7 +18,7 @@ export default function LoginPage() {
   return (
     <>
       <AuthWrapper>
-        <UserAuthForm />
+        <RegisterUserAuthForm />
       </AuthWrapper>
     </>
   );

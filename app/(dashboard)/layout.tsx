@@ -1,14 +1,20 @@
 import Navbar from "@/components/nav-bar";
+import { getExams, getProfile } from "@/lib/get-services";
+import { ProfileProvider } from "@/lib/ProfileContext";
+import { getSession } from "@/lib/session";
 import React from "react";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div>
-      {" "}
-      <Navbar />
-      <div className="container  mx-auto">{children}</div>
-    </div>
-  );
-};
+async function Layout({ children }: { children: React.ReactNode }) {
+  const credentials = await getSession();
+  const profile = await getProfile(credentials?.id);
+  const getAllExams = await getExams();
 
-export default layout;
+  return (
+    <ProfileProvider profile={profile} getAllExams={getAllExams}>
+      <Navbar credentials={credentials} />
+      <div className="container  mx-auto">{children}</div>
+    </ProfileProvider>
+  );
+}
+
+export default Layout;

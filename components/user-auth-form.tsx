@@ -7,26 +7,60 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { login } from "@/lib/auth-actions";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await login({
+        loginType: "regular",
+        email,
+        password,
+      });
+
+      if (response.message === "Login successful") {
+        router.push("/dashboard");
+      } else {
+        // Handle login error
+        setError(
+          (response.errors.password && response.errors.password) ||
+            (response.errors.email && response.errors.email) ||
+            "Login failed. Please try again."
+        );
+
+        return toast({
+          title: response.message,
+          description:
+            (response.errors.password && response.errors.password) ||
+            (response.errors.email && response.errors.email),
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
       setIsLoading(false);
-      router.push("/dashboard");
-    }, 3000);
-  }
+    }
+  };
 
   return (
-    <div  className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+    <div className={cn("grid gap-6", className)} {...props}>
+      <form onSubmit={handleSubmit}>
         <div className="grid gap-5">
           <div className="grid gap-3">
             <Label className="" htmlFor="email">
@@ -36,9 +70,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               id="email"
               placeholder="name@example.com"
               type="email"
+              value={email}
               autoCapitalize="none"
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               autoCorrect="off"
+              required
               disabled={isLoading}
             />
           </div>
@@ -47,10 +84,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               Password
             </Label>
             <Input
+              required
               id="password"
               placeholder="Password"
               type="password"
               autoCapitalize="none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
               autoCorrect="off"
               disabled={isLoading}
@@ -62,6 +102,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             )}
             Log in
           </Button>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
       </form>
       <div className="relative">

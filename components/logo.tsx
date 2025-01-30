@@ -1,13 +1,13 @@
 import React from "react";
 import Image from "next/image";
 
-const Logo = () => {
+const Logo = ({ width, height }: { width: number; height: number }) => {
   return (
     <div className="relative z-20 flex items-center justify-center text-lg font-medium">
       <Image
         src={"/Images/Logo.svg"}
-        width={200}
-        height={200}
+        width={width}
+        height={height}
         alt="logo-image"
       />
     </div>

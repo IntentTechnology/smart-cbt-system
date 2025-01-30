@@ -1,30 +1,19 @@
 import { Metadata } from "next";
 import { ExamList } from "@/components/exam-list";
-import { MainNav } from "@/components/main-nav";
-import { UserNav } from "@/components/user-nav";
+
 import Image from "next/image";
 import BookIcon from "@/public/Images/book-icon.svg";
-import { MobileNav } from "@/components/mobile-nav";
+import { getExams } from "@/lib/get-services";
 
 export const metadata: Metadata = {
   title: "Exams",
   description: "List of available exams.",
 };
 
-export default function ExamsPage() {
+export default async function ExamsPage() {
+  const allExams = await getExams();
   return (
     <div className=" flex-col flex">
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4">
-          <MainNav className="mx-6" />
-          <div className=" mr-auto flex md:hidden items-center">
-            <MobileNav />
-          </div>
-          <div className="ml-auto flex items-center space-x-4">
-            <UserNav />
-          </div>
-        </div>
-      </div>
       <div className="flex-1 space-y-4 p-2 md:p-8 pt-6">
         <div className="flex items-center gap-2 border-b pb-5 space-y-2">
           <Image src={BookIcon} alt="book icon" />
@@ -38,7 +27,7 @@ export default function ExamsPage() {
           </div>
         </div>
         <div className=" h-full flex-1 flex-col space-y-8 flex">
-          <ExamList />
+          <ExamList allExams={allExams} />
         </div>
       </div>
     </div>
