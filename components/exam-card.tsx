@@ -18,14 +18,14 @@ interface ExamCardProps {
 }
 
 export function ExamCard({ row, onTakeExam }: ExamCardProps) {
-  const router = useRouter();
   const { profile } = useProfile();
+  console.log(profile,"profile")
   const exam = row;
   const [toggle, setToggle] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleTakeExam = () => {
-    if (!profile?.data.profilePhotoUrl) {
+    if (!profile?.data?.profilePhotoUrl) {
       setIsOpen(true);
     } else {
       onTakeExam(exam.id);
@@ -89,7 +89,7 @@ export function ExamCard({ row, onTakeExam }: ExamCardProps) {
         </Badge> */}
           <Button
             onClick={handleTakeExam}
-            className="max-w-[135px] max-h-[52px] h-full px-7 py-4 text-[#FFFFFF] text-base font-semibold"
+           
           >
             Take Exam
           </Button>

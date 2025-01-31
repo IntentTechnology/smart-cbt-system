@@ -74,8 +74,8 @@ export function RegisterUserAuthForm({
         toast({
           title: response.message,
           description: response?.error,
-          className: "bg-green.300",
-          variant: "default",
+       
+          variant:"default",
         });
         // Handle successful registration
         console.log("Registration successful:", response);
@@ -139,15 +139,14 @@ export function RegisterUserAuthForm({
         // Handle successful registration
         toast({
           title: response?.message,
-          description: " Registration successful",
-          className: "bg-green.500",
+          description: "Registration successful",
           variant: "default",
         });
         console.log("Registration successful:", response);
         //creates the user profile after sign up
-        const userId = response.userId;
+        const userId = response?.userId;
         // localStorage.setItem("userId", userId);
-        const createProf = createProfile({
+        const createProf = await createProfile({
           userId,
           biometricToken: "4tgasf43hfvzbjcvagcvgaugfyavfqfq36567",
         });

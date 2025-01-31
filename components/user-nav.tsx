@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +29,7 @@ export function UserNav({ credentials }: any) {
           <Avatar className="h-8 w-8">
             <AvatarImage
               src={
-                profile?.data.profilePhotoUrl && profile.data.profilePhotoUrl
+                profile?.data?.profilePhotoUrl && profile?.data?.profilePhotoUrl
               }
               alt="profile picture"
             />
@@ -49,16 +50,16 @@ export function UserNav({ credentials }: any) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          </DropdownMenuItem> */}
+          {/* <DropdownMenuItem>
             Settings
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+    
         <DropdownMenuItem onClick={LogOut}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

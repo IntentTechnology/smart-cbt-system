@@ -13,6 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { MainNav } from "@/components/main-nav";
+import { useEffect, useState } from "react";
 import { Overview } from "@/components/overview";
 import { RecentExams } from "@/components/recent-exams";
 import { Search } from "@/components/search";
@@ -20,38 +21,48 @@ import { UserNav } from "@/components/user-nav";
 import { getFirstName, getInitials } from "@/lib/getInitialsFunction";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useProfile } from "@/lib/ProfileContext";
+import { BookOpen, BookOpenCheck, PenBox } from "lucide-react";
+import FullPageLoader from "./FullPageLoader";
+import Link from "next/link";
 
 const Dashboard = ({ credentials, getStats }: any) => {
   const { profile, getAllExams } = useProfile();
   const firstName = getFirstName(credentials.name);
   const initials = getInitials(credentials.name);
   return (
-    <div className=" flex-col md:flex">
+    <div className=" ">
+    <div className=" flex-col md:flex gap-5 mt-5">
       <div className="flex-1 space-y-4 p-4 pt-6">
-        <div className="  flex flex-row items-center md:items-center justify-start gap-5 ">
-          <div className="rounded-full">
-            <Avatar className="   h-20 w-20">
-              <AvatarImage
-                src={
-                  profile?.data.profilePhotoUrl && profile.data.profilePhotoUrl
-                }
-                alt="profile picture"
-              />
-              <AvatarFallback>{initials}</AvatarFallback>
-            </Avatar>
-          </div>
+        <div className="flex justify-between items-center">
+          <div className="  flex flex-row items-center md:items-center justify-start gap-5 ">
+            <div className="rounded-full">
+              <Avatar className="   h-20 w-20">
+                <AvatarImage
+                  src={profile?.data?.profilePhotoUrl || "/default-profile.png"}
+                  alt="profile picture"
+                />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            </div>
 
-          <div className="flex flex-col gap-0">
-            {" "}
-            <h2 className="text-xl font-[700] ">Hi,{firstName} </h2>
-            <p className="text-sm text-[#6B6D70] ">Welcome to your dashboard</p>
-          </div>
+            <div className="flex flex-col gap-0">
+              {" "}
+              <h2 className="text-xl font-[700] ">Hi,{firstName} </h2>
+              <p className="text-sm text-[#6B6D70] ">
+                Welcome to your dashboard
+              </p>
+            </div>
 
-          {/* <div className="w-fit flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+            {/* <div className="w-fit flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               <CalendarDateRangePicker />
               <Button className="w-full self-start">Download</Button>
             </div> */}
+          </div>
+          <Link href={"/exams"} passHref>
+            <Button>Take Exam <PenBox/></Button>
+          </Link>
         </div>
+
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -60,18 +71,8 @@ const Dashboard = ({ credentials, getStats }: any) => {
                   <CardTitle className="text-sm font-medium">
                     Total Exams Taken
                   </CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                  </svg>
+
+                  <BookOpenCheck    className="h-8 w-8 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-4xl font-bold">
@@ -96,7 +97,7 @@ const Dashboard = ({ credentials, getStats }: any) => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                    className="h-8 w-8  text-muted-foreground"
                   >
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                     <circle cx="9" cy="7" r="4" />
@@ -105,15 +106,15 @@ const Dashboard = ({ credentials, getStats }: any) => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-4xl font-bold">
-                    {getAllExams?.data?.length}
+                    {getAllExams && getAllExams?.data?.length}
                   </div>
                   {/* <p className="text-xs text-muted-foreground">
                     +180.1% from last month
                   </p> */}
                 </CardContent>
               </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <Card className="backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <CardHeader className="flex flex-row items-center justify-between  space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Completed Exams
                   </CardTitle>
@@ -125,7 +126,7 @@ const Dashboard = ({ credentials, getStats }: any) => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                   className="h-8 w-8  text-muted-foreground"
                   >
                     <rect width="20" height="14" x="2" y="5" rx="2" />
                     <path d="M2 10h20" />
@@ -191,6 +192,7 @@ const Dashboard = ({ credentials, getStats }: any) => {
           </TabsContent>
         </Tabs>
       </div>
+    </div>
     </div>
   );
 };

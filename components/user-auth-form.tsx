@@ -34,6 +34,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       });
 
       if (response.message === "Login successful") {
+        toast({
+          title: response.message,
+          description: "Welcome Back",
+          variant: "default",
+        });
         router.push("/dashboard");
       } else {
         // Handle login error

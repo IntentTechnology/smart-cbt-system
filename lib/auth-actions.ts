@@ -40,7 +40,7 @@ export async function Register(data: any) {
 }
 
 export async function sendOtp(data: any) {
-  const res = await fetch(`${AuthbaseUrl}/send_otp`, {
+  const res = await fetch(`${AuthbaseUrl}/signup/send_otp`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -65,11 +65,12 @@ export async function createProfile(data: any) {
   return response;
 }
 
-export async function setProfilePic(formData: FormData,userId:string) {
+export async function setProfilePic(formData: FormData, userId: string) {
+  
   const res = await fetch(`${ProfilebaseUrl}/set_profile_photo/${userId}`, {
     method: "POST",
     // headers: {
-    //     "Content-Type": "application/json",
+    //     "Content-Type": "multipart/form-data",
     // },
     body: formData,
   });
@@ -78,4 +79,3 @@ export async function setProfilePic(formData: FormData,userId:string) {
   }
   return res.json();
 }
-

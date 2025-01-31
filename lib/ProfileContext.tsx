@@ -1,5 +1,12 @@
 "use client";
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import FullPageLoader from "@/components/FullPageLoader";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  Suspense,
+} from "react";
 
 type Profile = {
   message: string;
@@ -8,7 +15,7 @@ type Profile = {
     userId: string;
     country: null;
     phoneNumber: null;
-    profilePhotoUrl: undefined;
+    profilePhotoUrl: string | undefined
     createdAt: string;
     updatedAt: string;
     name: string;
@@ -22,12 +29,14 @@ type Exams = {
     subject: string;
     createdAt: string;
     duration: number;
+    length:number
   }[];
 };
 
 interface ProfileContextProps {
   profile: Profile | null;
   getAllExams: Exams | null;
+  examResults: Exams | null;
 }
 
 const ProfileContext = createContext<ProfileContextProps | undefined>(
@@ -38,15 +47,21 @@ export const ProfileProvider = ({
   children,
   profile,
   getAllExams,
+  examResults,
 }: {
   children: React.ReactNode;
   profile: Profile | null;
   getAllExams: Exams | null;
+  examResults: Exams | null;
 }) => {
   return (
-    <ProfileContext.Provider value={{ profile, getAllExams }}>
-      {children}
-    </ProfileContext.Provider>
+    <div className="bg-[#FAFAFA] ">
+      <Suspense fallback={<FullPageLoader />}>
+        <ProfileContext.Provider  value={{ profile, getAllExams, examResults }}>
+          {children}
+        </ProfileContext.Provider>
+      </Suspense>
+    </div>
   );
 };
 

@@ -1,5 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import Image from "next/image";
+import { Button } from "./ui/button";
+import Link from "next/link";
 export function RecentExams({ getStats }: any) {
   return (
     <div className="space-y-8 w-full">
@@ -25,8 +27,14 @@ export function RecentExams({ getStats }: any) {
         ))}
 
       {getStats.data.recentExams.length === 0 && (
-        <div className="text-center text-gray-500">
-          No recent exams available.
+        <div className=" mt-10 flex gap-5 justify-center flex-col items-center">
+          <Image src="/Images/noee.svg" width={140} height={140} alt="" />
+          <div className="text-center text-gray-500">
+            No recent exams available.
+          </div>
+          <Link href={"/exams"} passHref>
+            <Button>Take Exam</Button>
+          </Link>
         </div>
       )}
     </div>

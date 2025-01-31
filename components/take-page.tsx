@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { useProfile } from "@/lib/ProfileContext";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Logo from "./logo";
+import FullPageLoader from "./FullPageLoader";
 interface Question {
   id: string;
   examId: string;
@@ -45,7 +46,7 @@ const TakeExam = ({
   const [submitting, setSubmitting] = useState(false);
   const [examData, setExamData] = useState<ExamData | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [userResponse, setAnswers] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState<number>(7200); // 2 hours in seconds
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -136,10 +137,10 @@ const TakeExam = ({
   const submitExam = async () => {
     if (!examData) return;
 
-    const userResponse = Object.entries(answers).map(
-      ([questionId, answer]) => ({
+    const questions = Object.entries(userResponse).map(
+      ([questionId, userResponse]) => ({
         questionId,
-        answer,
+        userResponse,
       })
     );
 
@@ -147,7 +148,7 @@ const TakeExam = ({
       userId: profile?.data.userId,
       examId: id,
       subject: getSignalExam.subject,
-      userResponse,
+      questions,
     };
     console.log(submissionData, "data");
     try {
@@ -159,18 +160,19 @@ const TakeExam = ({
           headers: {
             "Content-Type": "application/json",
           },
+          
           body: JSON.stringify({
             userId: profile?.data.userId,
             examId: id,
             subject: getSignalExam.subject,
-            userResponse,
+            questions,
           }),
         }
       );
 
-    //   if (!response.ok) {
-    //     throw new Error("Failed to submit exam");
-    //   }
+      //   if (!response.ok) {
+      //     throw new Error("Failed to submit exam");
+      //   }
 
       const result = await response.json();
       if (result.message === "Exam submitted successfully") {
@@ -187,15 +189,13 @@ const TakeExam = ({
         });
       }
       console.log("Exam submitted successfully:", result);
-
-     
     } catch (error) {
       console.error("Error submitting exam:", error);
-    //   toast({
-    //     title: "Error",
-    //     description: "Failed to submit exam. Please try again.",
-    //     variant: "destructive",
-    //   });
+      //   toast({
+      //     title: "Error",
+      //     description: "Failed to submit exam. Please try again.",
+      //     variant: "destructive",
+      //   });
     } finally {
       setSubmitting(false);
     }
@@ -209,14 +209,14 @@ const TakeExam = ({
   const getQuestionStatus = (index: number) => {
     if (!examData) return "unanswered";
     if (index === currentQuestion) return "current";
-    if (answers[examData.data[index].id]) return "answered";
+    if (userResponse[examData.data[index].id]) return "answered";
     return "unanswered";
   };
 
   if (loading || !examData || !examData.data || examData.data.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Loading exam questions...</div>
+      <div className="">
+        <FullPageLoader />
       </div>
     );
   }
@@ -264,7 +264,7 @@ const TakeExam = ({
             onValueChange={(value) =>
               handleAnswer(currentQuestionData.id, value)
             }
-            value={answers[currentQuestionData.id] || ""}
+            value={userResponse[currentQuestionData.id] || ""}
             className="space-y-4"
           >
             {Object.entries(currentQuestionData.options).map(([key, value]) => (

@@ -214,6 +214,8 @@ export function ExamList({ allExams }: any) {
                 src={capturedImage || "/placeholder.svg"}
                 alt="Captured"
                 style={{ width: "100%", maxWidth: "640px" }}
+                width={0}
+                height={0}
               />
             )}
             {!capturedImage ? (

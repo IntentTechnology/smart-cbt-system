@@ -46,8 +46,8 @@ export function ProfilePhotoUpload({ setIsOpen, isOpen, profile }: any) {
       //     body: formData,
       //   }
       // );
-      const response = await setProfilePic(formData, profile.data.userId);
-
+      const response = await setProfilePic(formData, profile?.data?.userId);
+      console.log(profile?.data?.userId,"user id");
       if (response.message === "Picture uploaded successfully") {
         toast({
           title: "Success",
