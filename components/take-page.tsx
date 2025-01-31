@@ -160,7 +160,7 @@ const TakeExam = ({
           headers: {
             "Content-Type": "application/json",
           },
-          
+
           body: JSON.stringify({
             userId: profile?.data.userId,
             examId: id,
@@ -231,19 +231,19 @@ const TakeExam = ({
     );
   }
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <div className="flex items-center justify-between ">
+    <div className="container lg:mx-auto p-4 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
         {/* <Button variant="outline" asChild>
           <Link href="/exams">← Go Back</Link>
         </Button> */}
         <Logo width={170} height={170} />
         <div>
-          <h1 className="text-2xl text-[#121212] font-bold">
+          <h1 className="text-2xl text-[#121212] font-bold text-center">
             {getSignalExam.subject} - Exam
           </h1>
         </div>
 
-        <div className="flex justify-center items-center gap-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
           <Button
             onClick={handleSubmit}
             className="bg-red-600 hover:bg-purple-700"
@@ -253,8 +253,8 @@ const TakeExam = ({
         </div>
       </div>
 
-      <div className="bg-white flex justify-between items-center rounded-lg shadow-md p-10 space-y-6">
-        <div className="flex flex-col gap-4">
+      <div className="bg-white flex  flex-col-reverse lg:flex-row items-start justify-start lg:justify-between lg:items-center rounded-lg shadow-md p-5 md:p-10 space-y-6">
+        <div className="flex flex-col gap-4 mt-8 lg:mt-0">
           {" "}
           <div className="text-xl font-semibold">
             Question {currentQuestion + 1}.
@@ -276,6 +276,22 @@ const TakeExam = ({
               </div>
             ))}
           </RadioGroup>
+          <div className="flex lg:hidden mt-5 gap-2 justify-start lg:justify-end items-center">
+            <Button
+              onClick={() => setCurrentQuestion((prev) => prev - 1)}
+              disabled={currentQuestion === 0}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() => setCurrentQuestion((prev) => prev + 1)}
+              disabled={currentQuestion === examData.data.length - 1}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              Next
+            </Button>
+          </div>
         </div>
         <div>
           <div className="text-xl flex justify-between items-center font-bold">
@@ -284,7 +300,7 @@ const TakeExam = ({
               {formatTime(timeLeft)}
             </span>
           </div>
-          <div className="flex justify-end pt-10 items-center gap-5">
+          <div className="flex flex-col md:flex-row md:justify-end pt-10 items-center gap-5">
             <div className="space-y-4">
               <div className="text-lg font-semibold">
                 Recent Profile Picture
@@ -311,7 +327,7 @@ const TakeExam = ({
               )}
             </div>
           </div>
-          <div className="flex mt-5 gap-2 justify-end items-center">
+          <div className="hidden lg:flex mt-5 gap-2 justify-start lg:justify-end items-center">
             <Button
               onClick={() => setCurrentQuestion((prev) => prev - 1)}
               disabled={currentQuestion === 0}
